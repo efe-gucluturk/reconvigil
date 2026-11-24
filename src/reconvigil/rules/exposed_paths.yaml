@@ -1,0 +1,89 @@
+# Exposed sensitive path rules. A hit requires status AND strict content validation
+# (regex / JSON keys / substrings) and non-HTML bodies, to avoid soft-404 false positives.
+- id: exposed-git-head
+  path: /.git/HEAD
+  title: Exposed Git repository metadata
+  severity: HIGH
+  cwe: CWE-538
+  description: >-
+    The .git directory is web-accessible. Attackers can reconstruct source code, history
+    and embedded secrets.
+  remediation: >-
+    Block access to dot-directories at the web server, remove .git from deploy artifacts,
+    and rotate any secrets that were ever committed.
+  must_match: '\A\s*(ref: refs/\S+|[0-9a-f]{40})\s*\Z'
+
+- id: exposed-dotenv
+  path: /.env
+  title: Exposed environment file
+  severity: HIGH
+  cwe: CWE-540
+  description: >-
+    A .env file is publicly readable and typically contains credentials, API keys and
+    connection strings.
+  remediation: >-
+    Remove the file from the web root, deny dotfile access in the server config, and rotate
+    every credential it contained.
+  must_match: '(?m)^[ \t]*(export[ \t]+)?[A-Z][A-Z0-9_]+[ \t]*=[ \t]*\S'
+  redact: true
+  escalate:
+    - regex: '(?im)^\s*(export\s+)?[A-Za-z0-9_]*(PASSWORD|PASSWD|SECRET|TOKEN|API_?KEY|PRIVATE_KEY|DATABASE_URL|ACCESS_KEY)[A-Za-z0-9_]*\s*=\s*\S+'
+      severity: CRITICAL
+
+- id: exposed-swagger-json
+  path: /swagger.json
+  title: Exposed Swagger/OpenAPI specification
+  severity: MEDIUM
+  cwe: CWE-200
+  description: >-
+    The API specification is public, disclosing every endpoint, parameter and data model.
+  remediation: >-
+    Restrict API documentation to authenticated/internal users or disable it in production.
+  json_keys_any: [swagger, openapi]
+
+- id: exposed-openapi-json
+  path: /openapi.json
+  title: Exposed OpenAPI specification
+  severity: MEDIUM
+  cwe: CWE-200
+  description: >-
+    The API specification is public, disclosing every endpoint, parameter and data model.
+  remediation: >-
+    Restrict API documentation to authenticated/internal users or disable it in production.
+  json_keys_any: [openapi, swagger]
+
+- id: exposed-actuator-health
+  path: /actuator/health
+  title: Spring Boot Actuator health endpoint exposed
+  severity: LOW
+  cwe: CWE-200
+  description: >-
+    Actuator endpoints are reachable. Health details and sibling endpoints (env, heapdump)
+    may leak internals if not locked down.
+  remediation: >-
+    Expose only required actuator endpoints, bind management to an internal port, and require
+    authentication.
+  json_keys_any: [status]
+  must_match: '"status"\s*:\s*"(UP|DOWN|OUT_OF_SERVICE|UNKNOWN)"'
+
+- id: security-txt-present
+  path: /.well-known/security.txt
+  title: security.txt present
+  severity: INFO
+  cwe: CWE-1059
+  description: A security.txt disclosure policy is published (good practice).
+  remediation: Keep the contact details and expiry date current.
+  must_match: '(?im)^contact:\s*\S+'
+  informational: true
+
+- id: robots-txt-present
+  path: /robots.txt
+  title: robots.txt present
+  severity: INFO
+  cwe: CWE-200
+  description: >-
+    robots.txt is present; Disallow entries can hint at sensitive paths and should not be
+    relied on for access control.
+  remediation: Do not list sensitive paths in robots.txt; enforce access control instead.
+  must_match: '(?im)^(user-agent|disallow|allow|sitemap):'
+  informational: true

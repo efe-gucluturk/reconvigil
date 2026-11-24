@@ -1,0 +1,72 @@
+# Subdomain takeover fingerprints.
+# cname_patterns: regexes matched against every hop of the CNAME chain.
+# fingerprints:   substrings in the HTTP response body indicating an unclaimed resource.
+# statuses:       optional allowed HTTP statuses for the fingerprint to count.
+# nxdomain_takeover: if true, a CNAME to this service whose host does not resolve is itself
+#                    a takeover candidate (the provider hostname can be re-registered).
+- service: AWS S3
+  cname_patterns:
+    - '\.s3[.-][a-z0-9.-]*amazonaws\.com$'
+  fingerprints:
+    - "NoSuchBucket"
+    - "The specified bucket does not exist"
+  statuses: [404]
+- service: GitHub Pages
+  cname_patterns:
+    - '\.github\.io$'
+  fingerprints:
+    - "There isn't a GitHub Pages site here."
+    - "For root URLs (like http://example.com/) you must provide an index.html file"
+  statuses: [404]
+- service: Heroku
+  cname_patterns:
+    - '\.herokuapp\.com$'
+    - '\.herokudns\.com$'
+    - '\.herokussl\.com$'
+  fingerprints:
+    - "No such app"
+    - "herokucdn.com/error-pages/no-such-app.html"
+  statuses: [404]
+- service: Netlify
+  cname_patterns:
+    - '\.netlify\.(app|com)$'
+  fingerprints:
+    - "Not Found - Request ID:"
+  statuses: [404]
+- service: Vercel
+  cname_patterns:
+    - '\.vercel\.app$'
+    - '\.vercel-dns\.com$'
+  fingerprints:
+    - "The deployment could not be found on Vercel"
+    - "DEPLOYMENT_NOT_FOUND"
+  statuses: [404]
+- service: Azure App Service
+  cname_patterns:
+    - '\.azurewebsites\.net$'
+    - '\.cloudapp\.azure\.com$'
+    - '\.cloudapp\.net$'
+    - '\.trafficmanager\.net$'
+    - '\.azureedge\.net$'
+    - '\.blob\.core\.windows\.net$'
+  fingerprints:
+    - "Error 404 - Web app not found"
+    - "404 Web Site not found"
+    - "The resource you are looking for has been removed"
+  statuses: [404]
+  nxdomain_takeover: true
+- service: Shopify
+  cname_patterns:
+    - '\.myshopify\.com$'
+    - '^shops\.myshopify\.com$'
+  fingerprints:
+    - "Sorry, this shop is currently unavailable."
+    - "Only one step left!"
+  statuses: [404, 200]
+- service: Fastly
+  cname_patterns:
+    - '\.fastly\.net$'
+    - '\.global\.ssl\.fastly\.net$'
+  fingerprints:
+    - "Fastly error: unknown domain"
+  statuses: [500, 404]

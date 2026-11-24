@@ -1,0 +1,25 @@
+# Environments & caches
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+*.egg-info/
+build/
+dist/
+.pytest_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+
+# Scan state (may contain target intelligence)
+*.db
+*.db-wal
+*.db-shm
+*.sqlite*
+
+# Generated report artifacts
+reports/
+reconvigil-report*
+report.html
+report.json
+report.md
