@@ -47,8 +47,14 @@ _BLOCKED_NETS = tuple(
         "fc00::/7",
         "fe80::/10",
         "ff00::/8",
+        "::/96",  # IPv4-compatible (deprecated): ::127.0.0.1
+        "::ffff:0:0:0/96",  # SIIT translated
+        "100::/64",
+        "fec0::/10",  # deprecated site-local
+        "64:ff9b:1::/48",  # local-use NAT64
     )
 )
+_NAT64 = ipaddress.ip_network("64:ff9b::/96")
 # Cloud metadata endpoints: blocked even with --allow-private.
 _METADATA_IPS = frozenset(
     ipaddress.ip_address(a) for a in ("169.254.169.254", "fd00:ec2::254", "100.100.100.200")
@@ -122,6 +128,8 @@ def is_blocked_ip(
         for embedded in (addr.ipv4_mapped, addr.sixtofour):
             if embedded is not None:
                 candidates.append(embedded)
+        if addr in _NAT64:  # 64:ff9b::a.b.c.d -> embedded IPv4
+            candidates.append(ipaddress.IPv4Address(int(addr) & 0xFFFFFFFF))
         if addr.teredo is not None:
             candidates.extend(addr.teredo)
     if any(c in _METADATA_IPS for c in candidates):

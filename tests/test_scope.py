@@ -184,3 +184,11 @@ async def test_out_of_scope_host_never_resolved() -> None:
     with pytest.raises(ScopeError):
         await make_scope(resolver).resolve_public("evil.com")
     assert resolver.queries == []
+
+
+@pytest.mark.parametrize(
+    "ip",
+    ["64:ff9b::7f00:1", "64:ff9b::a9fe:a9fe", "::7f00:1", "fec0::1", "::ffff:0:7f00:1"],
+)
+def test_embedded_ipv4_ipv6_forms_blocked(ip: str) -> None:
+    assert is_blocked_ip(ip)
