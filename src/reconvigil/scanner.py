@@ -27,8 +27,8 @@ class ScanConfig(StrictModel):
     words: list[str] | None = None  # None -> built-in list
     use_ct: bool = True
     block_private_ips: bool = True
-    concurrency: int = Field(default=20, ge=1, le=200)
-    max_candidates: int = Field(default=5000, ge=0, le=100_000)
+    concurrency: int = Field(default=20, ge=1, le=50)
+    max_candidates: int = Field(default=5000, ge=0, le=10_000)
     allowed_ports: list[int] | None = None  # None -> DEFAULT_PORTS
     http_port: int = Field(default=80, ge=1, le=65535)
     https_port: int = Field(default=443, ge=1, le=65535)

@@ -13,7 +13,7 @@ client.
 ![Docker](https://img.shields.io/badge/docker-non--root-2496ED?logo=docker&logoColor=white)
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
-> **Authorized use only.** ReconVigil sends traffic to the targets you give it. Scan only assets
+> **Authorized & Educational Use Only.** ReconVigil sends traffic to the targets you give it. Scan only assets
 > you own or have written permission to test.
 
 ## Features

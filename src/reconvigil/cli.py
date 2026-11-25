@@ -167,7 +167,7 @@ def scan(
     http_port: Annotated[int, typer.Option(min=1, max=65535, help="HTTP port to probe")] = 80,
     https_port: Annotated[int, typer.Option(min=1, max=65535, help="HTTPS port to probe")] = 443,
     max_candidates: Annotated[
-        int, typer.Option(min=0, max=100000, help="Cap on brute-force candidates")
+        int, typer.Option(min=0, max=10000, help="Cap on brute-force candidates")
     ] = 5000,
 ) -> None:
     """Discover the attack surface of DOMAIN, store a snapshot, and report drift."""

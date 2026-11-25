@@ -23,3 +23,12 @@ reconvigil-report*
 report.html
 report.json
 report.md
+output/
+Recon-Karneler/
+
+# Secrets & local data dumps
+.env
+.env.*
+!.env.example
+*.dump
+*.sql
