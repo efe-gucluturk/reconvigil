@@ -15,6 +15,8 @@ client.
 
 > **Authorized & Educational Use Only.** ReconVigil sends traffic to the targets you give it. Scan only assets
 > you own or have written permission to test.
+>
+> **Yalnızca Yetkili ve Eğitim Amaçlı Kullanım.** Bu proje yalnızca sahibi olduğunuz veya açık yazılı izin aldığınız sistemlerde ve eğitim amacıyla kullanılmalıdır. İzinsiz kullanım 5237 sayılı Türk Ceza Kanunu m. 243–244 kapsamında suç oluşturabilir; yazar kötüye kullanımdan sorumlu tutulamaz.
 
 ## Features
 
